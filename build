@@ -2,14 +2,20 @@
 
 cd game
 
+# Start of the JS shim we're wrapping the fay output in.
 printf '
 ;(function(){
 ' > game.js.big
 
+# Compile the game code using fay.
 fay Game.hs --strict Game -o game.js.meat
 cat game.js.meat >> game.js.big
 rm game.js.meat
 
+# Add in the JS shim which will add the game object to the
+# window or export it for node.  The step function is also modified
+# to transform the inputs from a JSON hash in to an array of key
+# value pairs for easy interaction with Haskell.
 printf '
   Strict.Game.game.step = (function(){
     var step = Strict.Game.game.step;
@@ -27,6 +33,7 @@ printf '
 })();
 ' >> game.js.big
 
+# Minify the output.
 jsmin game.js.big > ../www/game.js
 rm game.js.big
 
