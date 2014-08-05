@@ -11,14 +11,18 @@ cat game.js.meat >> game.js.big
 rm game.js.meat
 
 printf '
-  Strict.Game.step = (function(){
-    var step = Strict.Game.step;
-    return function (a,b) { return step(a)(b); }
+  Strict.Game.game.step = (function(){
+    var step = Strict.Game.game.step;
+    return function (inps,state) {
+      var inpsList = [];
+      for (var k in inps) inpsList.push ([k,inps[k]]);
+      return step(inpsList,state);
+    }
   })();
   if (typeof module !== "undefined") {
-    module.exports = Strict.Game;
+    module.exports = Strict.Game.game;
   } else {
-    window.game = Strict.Game;
+    window.game = Strict.Game.game;
   }
 })();
 ' >> game.js.big

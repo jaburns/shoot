@@ -1,44 +1,29 @@
 module Game (
-    dt,
-    players,
-    initialState,
-    defaultInput,
-    step
+    game
 ) where
 
 
-data Ball = Ball {
-    x :: Double
-  , y :: Double
-  , vx :: Double
-  , vy :: Double
-} deriving (Show)
-
-data State = State {
-    paddles :: (Double,Double)
-  , score :: (Int,Int)
-  , ball :: Ball
-} deriving (Show)
-
-data Input = Input {
-    paddle :: Double
-} deriving (Show)
+import qualified State as S
+import qualified Input as I
 
 
-initialState :: State
-initialState = State (0.1,0) (0,0) (Ball 0.1 0 0.03 0.025)
+data Game i s = Game {
+    dt :: Int
+  , players :: Int
+  , initialState :: s
+  , defaultInput :: i
+  , step :: [(String,i)] -> s -> s
+}
 
-defaultInput :: Input
-defaultInput = Input 0
+game :: Game I.Input S.State
+game = Game {
+    dt = 50
+  , players = 2
+  , initialState = S.initialState
+  , defaultInput = I.defaultInput
+  , step = mainStep
+}
 
-dt :: Int
-dt = 50
 
-players :: Int
-players = 2
-
-step :: Input -> State -> State
-step i s = s { ball = stepBall (ball s) }
-  where
-    stepBall (Ball x y vx vy) = Ball (x+vx) (y+vy) vx vy
-
+mainStep :: [(String,I.Input)] -> S.State -> S.State
+mainStep i s = s
