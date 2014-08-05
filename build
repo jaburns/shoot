@@ -1,5 +1,7 @@
 #!/usr/bin/env bash
 
+cd game
+
 printf '
 ;(function(){
 ' > game.js.big
@@ -21,6 +23,6 @@ printf '
 })();
 ' >> game.js.big
 
-jsmin game.js.big > game.js
+jsmin game.js.big > ../www/game.js
 rm game.js.big
 

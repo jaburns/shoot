@@ -1,11 +1,8 @@
 'use strict';
 
-var PORT = 1234;
-var FILES = [ '/game.html', '/game.js' ];
-
-var lag = process.argv.length > 2
-        ? parseInt (process.argv[2])
-        : 0;
+var port = process.argv.length > 2
+         ? parseInt (process.argv[2])
+         : 1234;
 
 var server = require ('http').createServer (handler);
 var fs = require ('fs');
@@ -13,7 +10,8 @@ var fs = require ('fs');
 function handler (req, res) {
   var filepath = req.url;
 
-  if (filepath === '/') filepath = FILES[0];
+  if (filepath === '/') filepath = '/index.html';
+  filepath = '/www/' + filepath;
 
   if (FILES.indexOf (filepath) < 0) {
     res.writeHead (404);
@@ -30,6 +28,6 @@ function handler (req, res) {
   });
 }
 
-var game = require ('./game');
+var game = require ('./www/game.js');
 require ('gamesync').run (server, game, lag);
-server.listen (PORT);
+server.listen (port);
