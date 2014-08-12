@@ -8,7 +8,7 @@ var server = require ('http').createServer (handler);
 var fs = require ('fs');
 var path = require ('path');
 
-var wwwPrefix = __dirname + '/www/';
+var wwwPrefix = path.join (__dirname, 'www');
 
 function handler (req, res) {
   var requestPath = req.url;
