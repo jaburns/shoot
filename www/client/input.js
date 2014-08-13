@@ -1,13 +1,6 @@
 define(function(require) {
   'use strict'
 
-  function objHas (obj, value) {
-    for (var k in obj) {
-      if (obj[k] === value) return true;
-    }
-    return false;
-  }
-
   var keyCodes = {
     '37': 'left',
     '39': 'right',
