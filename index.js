@@ -33,7 +33,7 @@ function handler (req, res) {
   });
 }
 
-var game = require ('./www/app/game.js');
+var game = require ('./www/shared/game.js');
 require ('gamesync').run (server, game);
 server.listen (port);
 

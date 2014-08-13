@@ -1,6 +1,9 @@
 
 requirejs.config({
-    baseUrl: 'lib',
-    paths: { app: '../app' }
+  baseUrl: 'lib',
+  paths: {
+    client: '../client',
+    shared: '../shared'
+  }
 });
-requirejs(['app/main']);
+requirejs(['client/main']);
