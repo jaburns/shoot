@@ -1,0 +1,3 @@
+[submodule "node_modules/gamesync"]
+	path = node_modules/gamesync
+	url = git@github.com:jaburns/node-gamesync
