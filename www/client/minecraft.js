@@ -7,11 +7,16 @@ define(function(require) {
 				document.getElementById( 'container' ).innerHTML = "";
 			}
 
+
+
+
+			var addedThing;
+
 			var fogExp2 = true;
 
 			var container;
 
-			var camera, controls, scene, renderer;
+			var camera, scene, renderer;
 
 			var mesh, mat;
 
@@ -29,16 +34,7 @@ define(function(require) {
 				container = document.getElementById( 'container' );
 
 				camera = new THREE.PerspectiveCamera( 50, window.innerWidth / window.innerHeight, 1, 20000 );
-				camera.position.y = getY( worldHalfWidth, worldHalfDepth ) * 100 + 100;
-
-				controls = new THREE.FirstPersonControls( camera );
-
-				controls.movementSpeed = 1000;
-				controls.lookSpeed = 0.125;
-				controls.lookVertical = true;
-				controls.constrainVertical = true;
-				controls.verticalMin = 1.1;
-				controls.verticalMax = 2.2;
+				camera.position.y =  getY( worldHalfWidth, worldHalfDepth ) * 100 + 100;
 
 				scene = new THREE.Scene();
 				scene.fog = new THREE.FogExp2( 0xffffff, 0.00015 );
@@ -229,6 +225,20 @@ define(function(require) {
 				var mesh = new THREE.Mesh( geometry, new THREE.MeshLambertMaterial( { map: texture, ambient: 0xbbbbbb, vertexColors: THREE.VertexColors } ) );
 				scene.add( mesh );
 
+
+
+        var cgeometry = new THREE.BoxGeometry( 200, 200, 200 );
+        cgeometry.applyMatrix( new THREE.Matrix4().makeTranslation(0, 0, -500) );
+				var cmaterial = new THREE.MeshBasicMaterial( { map: texture } );
+				var cmesh = new THREE.Mesh( cgeometry, cmaterial );
+				addedThing = cmesh;
+				scene.add( cmesh );
+
+
+
+
+
+
 				var ambientLight = new THREE.AmbientLight( 0xcccccc );
 				scene.add( ambientLight );
 
@@ -257,9 +267,6 @@ define(function(require) {
 				camera.updateProjectionMatrix();
 
 				renderer.setSize( window.innerWidth, window.innerHeight );
-
-				controls.handleResize();
-
 			}
 
 			function loadTexture( path, callback ) {
@@ -314,10 +321,11 @@ define(function(require) {
 			}
 
 			function render() {
-
-				controls.update( clock.getDelta() );
+			  camera.position.x = 0;
+			  camera.position.z = 0;
+			  camera.position.y += 1;
+			  addedThing.position.y = camera.position.y;
 				renderer.render( scene, camera );
-
 			}
 
 });
