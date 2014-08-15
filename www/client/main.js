@@ -5,5 +5,5 @@ define(function(require) {
   var render = require ('client/render');
   var getInput = require ('client/input');
 
-  runGame (game, render, getInput);
+  gamesync.runGame (game, render, getInput);
 });
