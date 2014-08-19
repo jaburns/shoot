@@ -1,5 +1,7 @@
 define(function(require){
 
+    var modes = [ CameraMode, MoveMode, PencilMode, EraserMode, CurveMode, PolyMode ];
+
     function Editor (window, context, ready) {
         this.camera = {x:0, y:0};
 
@@ -17,14 +19,13 @@ define(function(require){
         this._icons.onload = ready;
         this._icons.src = '/gfx/editor-icons.png';
 
-        window.onkeydown = function(e) {
-            console.log (JSON.stringify (this._solids));
-        }.bind(this);
-
         window.onmousedown = function(e) {
-            var modes = [ CameraMode, MoveMode, PencilMode, EraserMode, CurveMode ];
-            if (e.pageX < 64 && e.pageY < 64*modes.length) {
-                this._mode = new modes[~~(e.pageY/64)] (this);
+            if (e.pageX < 64) {
+                if (e.pageY < 64*modes.length) {
+                    this._mode = new modes[~~(e.pageY/64)] (this);
+                } else if (e.pageY < 64*(modes.length+1)) {
+                    window.prompt ("Level data:", JSON.stringify (this._solids));
+                }
             } else if (this._mode.onmousedown) {
                 this._mode.onmousedown (e.pageX,e.pageY);
             }
@@ -123,11 +124,14 @@ define(function(require){
         }}
 
         // Draw the toolbox.
-        ctx.drawImage(this._icons, this._mode instanceof CameraMode ?64:0,0,64,64,0,0,64,64);
-        ctx.drawImage(this._icons, this._mode instanceof MoveMode ?64:0,64,64,64,0,64,64,64);
-        ctx.drawImage(this._icons, this._mode instanceof PencilMode ?64:0,128,64,64,0,128,64,64);
-        ctx.drawImage(this._icons, this._mode instanceof EraserMode ?64:0,64,64,64,0,192,64,64);
-        ctx.drawImage(this._icons, this._mode instanceof CurveMode ?64:0,128,64,64,0,256,64,64);
+        for (var i = 0; i < modes.length; ++i) {
+            var sx = this._mode instanceof modes[i] ? 64 : 0;
+            var sy = 64 * modes[i].iconIndex;
+            var dy = 64 * i;
+            ctx.drawImage(this._icons, sx, sy, 64, 64, 0, dy, 64,64);
+        }
+        // Draw save icon
+        ctx.drawImage(this._icons, 0, 32, 64, 64, 0, dy+64, 64,64);
     }
 
     Editor.prototype.getPointIndexUnderMouse = function () {
@@ -185,17 +189,28 @@ define(function(require){
         }
     }
 
+    Editor.prototype.addPoly = function (x,y) {
+        this._solids.push ([
+            {x: x-50, y: y+50, c: false},
+            {x: x-50, y: y-50, c: false},
+            {x: x+50, y: y-50, c: false},
+            {x: x+50, y: y+50, c: false}
+        ]);
+    }
+
 // Editor mode definitions ----------------------------------------------------
     // CameraMode - Move the view around
     // MoveMode - Move vertices
     // PencilMode - Create vertices
     // EraserMode - Remove vertices
     // CurveMode - Toggle curve control vertices
+    // PolyMode - Create new polygons
 
     function CameraMode (editor) {
         this._editor = editor;
         this._startDrag = null;
     }
+    CameraMode.iconIndex = 0;
     CameraMode.prototype.onmousedown = function (x,y) {
         this._startDrag = {
             x: x + this._editor.camera.x,
@@ -216,6 +231,7 @@ define(function(require){
         this._editor = editor;
         this._currentDragPoint = null;
     }
+    MoveMode.iconIndex = 0;
     MoveMode.prototype.onmousedown = function (x,y) {
         this._currentDragPoint = this._editor.getPointUnderMouse ();
     }
@@ -234,6 +250,7 @@ define(function(require){
     function PencilMode (editor) {
         this._editor = editor;
     }
+    PencilMode.iconIndex = 1;
     PencilMode.prototype = new MoveMode (null);
     PencilMode.prototype.onmousedown = function (x,y) {
         this._currentDragPoint = this._editor.insertPointAfter(
@@ -244,6 +261,7 @@ define(function(require){
     function EraserMode (editor) {
         this._editor = editor;
     }
+    EraserMode.iconIndex = 2;
     EraserMode.prototype.onmousedown = function (x,y) {
         this._editor.deletePointAt(
             this._editor.getPointIndexUnderMouse ()
@@ -253,9 +271,21 @@ define(function(require){
     function CurveMode (editor) {
         this._editor = editor;
     }
+    CurveMode.iconIndex = 1;
     CurveMode.prototype.onmousedown = function (x,y) {
         this._editor.toggleCurveModeAt(
             this._editor.getPointIndexUnderMouse ()
+        );
+    }
+
+    function PolyMode (editor) {
+        this._editor = editor;
+    }
+    PolyMode.iconIndex = 0;
+    PolyMode.prototype.onmousedown = function (x,y) {
+        this._editor.addPoly(
+            x + this._editor.camera.x,
+            y + this._editor.camera.y
         );
     }
 
@@ -270,5 +300,4 @@ define(function(require){
         editor.render ();
         requestAnimationFrame (loop);
     }
-
 });
