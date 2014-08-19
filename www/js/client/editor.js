@@ -19,11 +19,7 @@ define(function(require){
         window.onmousedown = function(e) {
             var modes = [ CameraMode, MoveMode, PencilMode, EraserMode, CurveMode ];
             if (e.pageX < 64 && e.pageY < 64*modes.length) {
-                for (var i = 0; i < modes.length; ++i) {
-                    if (~~(e.pageY/64) === i) {
-                        this._mode = new modes[i] (this);
-                    }
-                }
+                this._mode = new modes[~~(e.pageY/64)] (this);
             } else if (this._mode.onmousedown) {
                 this._mode.onmousedown (e.pageX,e.pageY);
             }
