@@ -3,18 +3,23 @@ define(function(require){
     function Editor (window, context, ready) {
         this.camera = {x:0, y:0};
 
-        this._solids= [[
-            {x:100,y:100,c:false},
-            {x:200,y:100,c:true},
-            {x:200,y:200,c:true},
-            {x:100,y:200,c:false}
+        this._solids = [[
+            {"x":100,"y":100,"c":false},{"x":191,"y":438,"c":true},{"x":502,"y":432,"c":true},
+            {"x":630,"y":285,"c":false},{"x":726,"y":177,"c":true},{"x":751,"y":199,"c":true},
+            {"x":935,"y":284,"c":false},{"x":1036,"y":339,"c":false},{"x":1249,"y":339,"c":false},
+            {"x":1249,"y":712,"c":false},{"x":10,"y":714,"c":false},{"x":12,"y":100,"c":false}
         ]];
+
         this._mode = new CameraMode (this);
         this._context = context;
         this._mouse = {x:0, y:0};
         this._icons = new Image ();
         this._icons.onload = ready;
         this._icons.src = '/gfx/editor-icons.png';
+
+        window.onkeydown = function(e) {
+            console.log (JSON.stringify (this._solids));
+        }.bind(this);
 
         window.onmousedown = function(e) {
             var modes = [ CameraMode, MoveMode, PencilMode, EraserMode, CurveMode ];
@@ -72,6 +77,15 @@ define(function(require){
                         this._solids[i][j+2].y - this.camera.y);
                     j += 3;
                 }
+                else if (j < this._solids[i].length - 1
+                && this._solids[i][j].c) {
+                    ctx.quadraticCurveTo(
+                        this._solids[i][j].x - this.camera.x,
+                        this._solids[i][j].y - this.camera.y,
+                        this._solids[i][j+1].x - this.camera.x,
+                        this._solids[i][j+1].y - this.camera.y);
+                    j += 2;
+                }
                 else {
                     ctx.lineTo(
                         this._solids[i][j].x - this.camera.x,
@@ -93,7 +107,7 @@ define(function(require){
             if (canTouchPoints && ptDist2 (ptMinusCamera,this._mouse) < 10*10) {
                 ctx.lineWidth = 4;
                 ctx.strokeStyle = '#ff4';
-            } else if (j === 0) {
+            } else if (j === 0 || j === this._solids[i].length-1) {
                 ctx.lineWidth = 2;
                 ctx.strokeStyle = '#4f4';
             } else if (this._solids[i][j].c) {
@@ -149,9 +163,26 @@ define(function(require){
         if (! index) return;
         var i = index.i, j = index.j;
         var pt = this._solids[i][j];
-        var newPt = {x:pt.x, y:pt.y, c:pt.c};
+        var newPt = {x:pt.x, y:pt.y, c:false};
         this._solids[i].splice (j+1,0,newPt);
         return newPt;
+    }
+
+    Editor.prototype.toggleCurveModeAt = function (index) {
+        if (! index) return;
+        var i = index.i, j = index.j;
+        var pt = this._solids[i][j];
+        if (pt.c) {
+            pt.c = false;
+        } else {
+            // A curve anchor must not be the first or last vertex in a solid.
+            if (j === 0 || j === this._solids.length-1) return;
+            // A point may become a curve anchor if it's neither preceded nor followed by 2 curve anchors.
+            if (j > 1 && this._solids[i][j-1].c && this._solids[i][j-2].c) return;
+            if (j < this._solids.length-2 && this._solids[i][j+1].c && this._solids[i][j+2].c) return;
+
+            pt.c = true;
+        }
     }
 
 // Editor mode definitions ----------------------------------------------------
@@ -214,7 +245,7 @@ define(function(require){
         this._editor = editor;
     }
     EraserMode.prototype.onmousedown = function (x,y) {
-        this._editor.deletePointAt (
+        this._editor.deletePointAt(
             this._editor.getPointIndexUnderMouse ()
         );
     }
@@ -223,8 +254,9 @@ define(function(require){
         this._editor = editor;
     }
     CurveMode.prototype.onmousedown = function (x,y) {
-        var pt = this._editor.getPointUnderMouse ();
-        if (pt) pt.c = !pt.c;
+        this._editor.toggleCurveModeAt(
+            this._editor.getPointIndexUnderMouse ()
+        );
     }
 
 // ----------------------------------------------------------------------------
