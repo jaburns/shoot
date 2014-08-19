@@ -5,7 +5,7 @@ it as a submodule instead of using ``pacakge.json`` so I could work on them both
 #setup
 git clone https://github.com/jaburns/uni
 cd uni
-git submodule update init
+git submodule update --init
 cd node_modules/gamesync
 npm install
 cd ../..
