@@ -61,7 +61,6 @@ define(function(require) {
   return function (ctx) {
     return function (state) {
       ctx.canvas.width = ctx.canvas.width;
-      console.log (state.players);
       for (var i = 0; i < state.players.length; ++i) {
         drawPlayer (ctx, state.players[i]);
       }
