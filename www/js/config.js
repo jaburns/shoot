@@ -1,3 +1,3 @@
 var require = {
-  baseUrl: 'js',
+  baseUrl: 'js'
 }
