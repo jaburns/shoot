@@ -2,10 +2,10 @@ define(function(require) {
   'use strict'
 
   var keyCodes = {
-    '37': 'left',
-    '39': 'right',
-    '65': 'jump',
-    '66': 'shoot',
+    '65': 'left',  // A
+    '68': 'right', // D
+    '87': 'jump',  // W
+    '32': 'shoot', // Space
   };
 
   var keys = {
