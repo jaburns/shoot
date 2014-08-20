@@ -1,4 +1,4 @@
-I'm actively devving this repo as well as ``node-gamesync`` so I just added
+I'm actively deving this repo as well as ``node-gamesync`` so I just added
 it as a submodule instead of using ``pacakge.json`` so I could work on them both easily.
 
 ```sh
