@@ -15,7 +15,8 @@ define(function(require) {
     this.id = id;
     this.pos = {x:0, y:0};
     this.vel = {x:0, y:0};
-    this.standing = false;
+    this.wheel = {theta:0, omega:0};
+    this.seatAngle = {target:0, value:0};
   }
 
   st.Button = function () {
