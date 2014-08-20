@@ -34,7 +34,7 @@ define(function(require) {
   }
 
   return {
-    dt: 30,
+    dt: 50,
     players: 5,
     initialState: new st.State (),
     defaultInput: new st.Input (),
