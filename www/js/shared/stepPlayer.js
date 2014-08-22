@@ -7,10 +7,10 @@ define(function(require) {
 
   return function (input, player, state) {
     if (input.left.held) {
-      player.vel.x -= 0.2;
+      player.vel.x -= 0.6;
       player.seatAngle.target = -Math.PI / 8;
     } else if (input.right.held) {
-      player.vel.x += 0.2;
+      player.vel.x += 0.6;
       player.seatAngle.target = Math.PI / 8;
     } else {
       player.vel.x *= 0.98;
@@ -18,7 +18,7 @@ define(function(require) {
     }
 
     player.seatAngle.value +=
-      (player.seatAngle.target - player.seatAngle.value) / 10;
+      (player.seatAngle.target - player.seatAngle.value) / 3;
 
     player.pos.x += player.vel.x;
 
