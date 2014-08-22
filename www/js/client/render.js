@@ -1,4 +1,5 @@
 define(function(require) {
+return function (ctx) {
   'use strict'
 
   function makeWheel (color1, color2) {
@@ -58,12 +59,31 @@ define(function(require) {
     drawSeat (ctx, player.pos.x+300, 35, player.seatAngle.value);
   }
 
-  return function (ctx) {
-    return function (state) {
-      ctx.canvas.width = ctx.canvas.width;
-      for (var i = 0; i < state.players.length; ++i) {
-        drawPlayer (ctx, state.players[i]);
-      }
+  var state0;
+  var state1;
+  var stateArriveTime = null;
+  var DT = 50;
+
+  function renderState (state) {
+    for (var i in state.players) {
+      drawPlayer (ctx, state.players[i]);
     }
   }
-});
+
+  function renderLoop () {
+    ctx.canvas.width = ctx.canvas.width;
+    if (state0 && state1) {
+      var t = (new Date - stateArriveTime) / DT;
+      var interState = gamesync.json.lerp (state0, state1, t);
+      renderState (interState);
+    }
+    window.requestAnimationFrame (renderLoop);
+  }
+  window.requestAnimationFrame (renderLoop);
+
+  return function (state) {
+    state0 = state1 ? gamesync.json.clone(state1) : null;
+    state1 = gamesync.json.clone(state);
+    stateArriveTime = new Date;
+  }
+}});
