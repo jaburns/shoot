@@ -3,8 +3,10 @@ define(function(require) {
 
   var game = require ('shared/game');
 
-  var render = require ('client/render')
-    (document.getElementById('paper').getContext('2d'));
+  var render = require ('client/render') (
+    document.getElementById('paper').getContext('2d'),
+    document.getElementById('smooth-enable')
+  );
 
   var getInput = require ('client/input');
 

@@ -8,9 +8,6 @@ define(function(require) {
   var st = require('./structs');
   var stepPlayer = require('./stepPlayer');
 
-  /**
-   * The main step function for the game.
-   */
   function mainStep (inputs, oldState) {
     var newState = new st.State ();
 

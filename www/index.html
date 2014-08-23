@@ -1,23 +1,35 @@
 <!DOCTYPE html>
 <html>
 <head>
-    <style>
-        body {
-            margin:0;
-            padding:0;
-            background-color: #222;
-            text-align: center;
-        }
-        #paper {
-            background-color: black;
-        }
-    </style>
-    <script type="text/javascript" src="/socket.io/socket.io.js"></script>
-    <script type="text/javascript" src="/gamesync/client.js"></script>
-    <script type="text/javascript" src="/js/config.js"></script>
-    <script type="text/javascript" data-main="client/main" src="/js/require.js"></script>
+  <style>
+    body {
+      margin:0;
+      padding:0;
+      background-color: #222;
+      text-align: center;
+    }
+    #paper {
+      background-color: black;
+    }
+    #options {
+      color: #FFF;
+      position: fixed;
+      left: 0;
+      top: 0;
+      font-family: Sans-Serif;
+      font-size: small;
+    }
+  </style>
+  <script type="text/javascript" src="/socket.io/socket.io.js"></script>
+  <script type="text/javascript" src="/gamesync/client.js"></script>
+  <script type="text/javascript" src="/js/config.js"></script>
+  <script type="text/javascript" data-main="client/main" src="/js/require.js"></script>
 </head>
 <body>
-    <canvas id="paper" width="600" height="50"></canvas>
+  <div id="options">
+    <label for="smooth-enable">Smoothing: </label>
+    <input type="checkbox" id="smooth-enable" checked="checked" />
+  </div>
+  <canvas id="paper" width="600" height="50"></canvas>
 </body>
 </html>

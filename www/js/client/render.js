@@ -1,5 +1,5 @@
 define(function(require) {
-return function (ctx) {
+return function (ctx, smoothingCheckbox) {
   'use strict'
 
   function makeWheel (color1, color2) {
@@ -72,18 +72,23 @@ return function (ctx) {
 
   function renderLoop () {
     ctx.canvas.width = ctx.canvas.width;
-    if (state0 && state1) {
+
+    if (smoothingCheckbox.checked && state0 && state1) {
       var t = (new Date - stateArriveTime) / DT;
       var interState = gamesync.json.lerp (state0, state1, t);
       renderState (interState);
     }
+    else if (! smoothingCheckbox.checked && state1) {
+      renderState (state1);
+    }
+
     window.requestAnimationFrame (renderLoop);
   }
   window.requestAnimationFrame (renderLoop);
 
   return function (state) {
-    state0 = state1 ? gamesync.json.clone(state1) : null;
-    state1 = gamesync.json.clone(state);
+    state0 = state1 ? state1 : null;
+    state1 = state;
     stateArriveTime = new Date;
   }
 }});
