@@ -5,6 +5,8 @@ if (typeof define !== 'function') {
 define(function(require) {
   'use strict';
 
+  var SLOPE_ACCURACY = 1e9;
+
   var Vec2 = require('./vec2');
 
   function intPower (n,p) {
@@ -81,6 +83,22 @@ define(function(require) {
       }
 
       return y > yMin && y < yMax;
+    },
+
+    /**
+     * Given the slope of a line passing through the origin and a point on the plane,
+     * this function returns the intersection point of a line which passes through the
+     * provided point and perpendicularly intersects the first line.
+     */
+    projectPointOnLine: function (m, x, y) {
+      if (Math.Abs (m) < 1 / SLOPE_ACCURACY) {
+        return {x:x, y:0};
+      }
+      else if (Math.Abs (m) > SLOPE_ACCURACY) {
+        return {x:0, y:y};
+      }
+      var retY = (y*m+x)*m/(1+m*m);
+      return {x:retY/m, y:retY};
     },
 
     /**
