@@ -47,10 +47,10 @@ define(function(require) {
       numb /= denom;
 
       if (numa >= 0 && numa <= 1 && numb >= 0 && numb <= 1) {
-        return {
-          x: p00x + dx2x1*numa,
-          y: p00y + dy2y1*numa
-        };
+        return new Vec2(
+          p00x + dx2x1*numa,
+          p00y + dy2y1*numa
+        );
       }
 
       return null;
@@ -90,13 +90,13 @@ define(function(require) {
      */
     projectPointOnLine: function (m, x, y) {
       if (Math.Abs (m) < 1e-9) {
-        return {x:x, y:0};
+        return new Vec2 (x,0);
       }
       else if (Math.Abs (m) > 1e9) {
-        return {x:0, y:y};
+        return new Vec2 (0,y);
       }
       var retY = (y*m+x)*m/(1+m*m);
-      return {x:retY/m, y:retY};
+      return new Vec2 (retY/m, retY);
     },
 
     /**
