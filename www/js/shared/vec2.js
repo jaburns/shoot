@@ -6,7 +6,11 @@ define(function(require) {
   'use strict';
 
   function Vec2 (x,y) {
-    this.set (x,y);
+    if (typeof x === 'undefined') {
+      this.x = 0;
+      this.y = 0;
+    }
+    else this.set (x,y);
   }
 
   Vec2.prototype.set = function (x,y) {
