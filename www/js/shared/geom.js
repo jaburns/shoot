@@ -5,8 +5,6 @@ if (typeof define !== 'function') {
 define(function(require) {
   'use strict';
 
-  var SLOPE_ACCURACY = 1e9;
-
   var Vec2 = require('./vec2');
 
   function intPower (n,p) {
@@ -91,10 +89,10 @@ define(function(require) {
      * provided point and perpendicularly intersects the first line.
      */
     projectPointOnLine: function (m, x, y) {
-      if (Math.Abs (m) < 1 / SLOPE_ACCURACY) {
+      if (Math.Abs (m) < 1e-9) {
         return {x:x, y:0};
       }
-      else if (Math.Abs (m) > SLOPE_ACCURACY) {
+      else if (Math.Abs (m) > 1e9) {
         return {x:0, y:y};
       }
       var retY = (y*m+x)*m/(1+m*m);
