@@ -5,7 +5,7 @@ if (typeof define !== 'function') {
 define(function(require) {
   'use strict'
 
-  var st = require('./structs');
+  var st = require('./state');
   var stepPlayer = require('./stepPlayer');
 
   function mainStep (inputs, oldState) {
