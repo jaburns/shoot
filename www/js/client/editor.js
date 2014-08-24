@@ -1,6 +1,8 @@
 define(function(require){
   var modes = [ CameraMode, MoveMode, PencilMode, EraserMode, CurveMode, PolyMode ];
 
+  var Level = require('../shared/level');
+
   function Editor (window, context, ready) {
     this.camera = {x:0, y:0};
 
@@ -51,9 +53,20 @@ define(function(require){
     return dx*dx + dy*dy;
   }
 
+
   Editor.prototype.render = function () {
     var ctx = this._context;
     var canTouchPoints = !(this._mode instanceof CameraMode);
+
+    // This code renders the collision map for the first solid.
+//      ctx.fillStyle = '#ddd';
+//      ctx.beginPath();
+//      ctx.moveTo(qq[0].x, qq[0].y);
+//      for (var i = 0; i < qq.length; i++) {
+//        ctx.lineTo(qq[i].x, qq[i].y);
+//      }
+//      ctx.fill();
+//      return;
 
     // Draw the solid chunks of terrain.
     ctx.fillStyle = '#ddd';

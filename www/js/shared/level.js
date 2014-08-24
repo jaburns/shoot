@@ -16,12 +16,11 @@ define(function(require) {
     ]];
   }
 
-  var SEG_LENGTH = 5;
+  var SEG_LENGTH = 10;
   var LEN_MEASURE_PRECISION = 20;
 
   Level.prototype.getCurves = function (solidIndex) {
     var solid = this.solids[solidIndex];
-
     var ret = [[ solid[0] ]];
 
     for (var i = 1; i < solid.length; ) {
@@ -38,6 +37,8 @@ define(function(require) {
         i++;
       }
     }
+
+    return ret;
   }
 
   Level.prototype.getLines = function () {
@@ -45,6 +46,10 @@ define(function(require) {
     var pts = [curves[0][0]];
 
     for (var i = 1; i < curves.length; ++i) {
+      if (curves[i].length < 2) {
+        pts.push (curves[i][0]);
+        continue;
+      }
       var ptsIn = [ curves[i-1][curves[i-1].length-1] ].concat (curves[i]);
       var len = geom.bezierLength (ptsIn, LEN_MEASURE_PRECISION);
       var segs = ~~(len / SEG_LENGTH);

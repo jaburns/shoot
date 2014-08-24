@@ -8,11 +8,14 @@ define(function(require) {
   var Vec2 = require('./vec2');
 
   function intPower (n,p) {
-    if (p < 1) return n;
-    while (--p > 0) n *= n;
-    return n;
+    if (p < 1) return 1;
+    if (p === 1) return n;
+    var ret = n;
+    while (--p > 0) ret *= n;
+    return ret;
   }
   function fact (n) {
+    if (n < 1) return 1;
     var ret = n;
     while (n > 1) ret *= --n;
     return ret;
@@ -78,7 +81,7 @@ define(function(require) {
       }
 
       return y > yMin && y < yMax;
-    }
+    },
 
     /**
      * Given an array of control points representing an arbitrary order Bezier curve
@@ -102,7 +105,7 @@ define(function(require) {
       }
 
       return ret;
-    }
+    },
 
     /**
      * Estimates the length of a Bezier curve by measuring straight line segments
