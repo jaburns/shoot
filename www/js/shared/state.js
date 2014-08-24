@@ -3,11 +3,12 @@ if (typeof define !== 'function') {
 }
 
 define(function(require) {
-  'use strict'
+  'use strict';
 
   var st = {};
 
   st.State = function () {
+    this.level = 0;
     this.players = [];
   }
 

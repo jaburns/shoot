@@ -5,6 +5,7 @@ if (typeof define !== 'function') {
 define(function(require) {
   'use strict';
 
+  var Level = require('./level');
   var st = require('./state');
   var stepPlayer = require('./stepPlayer');
 
@@ -31,6 +32,7 @@ define(function(require) {
   }
 
   return {
+    // Implementation of GameSync interface.
     dt: 50,
     players: 5,
     initialState: new st.State,

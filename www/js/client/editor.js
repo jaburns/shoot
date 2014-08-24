@@ -3,11 +3,12 @@ define(function(require){
 
   var Level = require('../shared/level');
   var renderLevel = require('./renderLevel');
+  var levelData = require('../shared/levelData');
 
   function Editor (window, context, ready) {
     this.camera = {x:0, y:0};
     this.context = context;
-    this.level = new Level;
+    this.level = levelData[0];
 
     this._mode = new CameraMode (this);
     this._mouse = {x:0, y:0};

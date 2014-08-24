@@ -2,6 +2,10 @@ define(function(require) {
 return function (ctx, smoothingCheckbox) {
   'use strict'
 
+  var game = require('../shared/game');
+  var levelData = require('../shared/levelData');
+  var renderLevel = require('./renderLevel');
+
   function makeWheel (color1, color2) {
     var canvas = document.createElement('canvas');
     var ctx = canvas.getContext('2d');
@@ -68,6 +72,8 @@ return function (ctx, smoothingCheckbox) {
     for (var i in state.players) {
       drawPlayer (ctx, state.players[i]);
     }
+    // TODO cache rendered level in a hidden canvas element.
+    renderLevel (ctx, state.players[i].pos, levelData[state.level]);
   }
 
   function renderLoop () {
