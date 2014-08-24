@@ -2,9 +2,11 @@ define(function(require){
   var modes = [ CameraMode, MoveMode, PencilMode, EraserMode, CurveMode, PolyMode ];
 
   var Level = require('../shared/level');
+  var renderLevel = require('./renderLevel');
 
   function Editor (window, context, ready) {
     this.camera = {x:0, y:0};
+    this.context = context;
 
     this._solids = [[
       {"x":100,"y":100,"c":false},{"x":191,"y":438,"c":true},{"x":502,"y":432,"c":true},
@@ -14,7 +16,6 @@ define(function(require){
     ]];
 
     this._mode = new CameraMode (this);
-    this._context = context;
     this._mouse = {x:0, y:0};
     this._icons = new Image ();
     this._icons.onload = ready;
@@ -55,7 +56,7 @@ define(function(require){
 
 
   Editor.prototype.render = function () {
-    var ctx = this._context;
+    var ctx = this.context;
     var canTouchPoints = !(this._mode instanceof CameraMode);
 
     // This code renders the collision map for the first solid.
@@ -68,56 +69,17 @@ define(function(require){
 //      ctx.fill();
 //      return;
 
-    // Draw the solid chunks of terrain.
-    ctx.fillStyle = '#ddd';
-    for (var i = 0; i < this._solids.length; i++) {
-      ctx.beginPath();
+    // Draw the terrain.
+    var q = new Level;
+    q.solids = this._solids;
+    renderLevel (ctx,this.camera,q);
 
-      // TODO Use Level class method .getCurves();
-
-      ctx.moveTo(
-        this._solids[i][0].x - this.camera.x,
-        this._solids[i][0].y - this.camera.y);
-
-      for (var j = 1; j < this._solids[i].length; ) {
-        if (j < this._solids[i].length - 2
-        && this._solids[i][j].c
-        && this._solids[i][j+1].c) {
-          ctx.bezierCurveTo(
-            this._solids[i][j].x - this.camera.x,
-            this._solids[i][j].y - this.camera.y,
-            this._solids[i][j+1].x - this.camera.x,
-            this._solids[i][j+1].y - this.camera.y,
-            this._solids[i][j+2].x - this.camera.x,
-            this._solids[i][j+2].y - this.camera.y);
-          j += 3;
-        }
-        else if (j < this._solids[i].length - 1
-        && this._solids[i][j].c) {
-          ctx.quadraticCurveTo(
-            this._solids[i][j].x - this.camera.x,
-            this._solids[i][j].y - this.camera.y,
-            this._solids[i][j+1].x - this.camera.x,
-            this._solids[i][j+1].y - this.camera.y);
-          j += 2;
-        }
-        else {
-          ctx.lineTo(
-            this._solids[i][j].x - this.camera.x,
-            this._solids[i][j].y - this.camera.y);
-          j++;
-        }
-      }
-
-      ctx.fill();
-    }
-
-    // Draw all the points in the map.
+    // Draw all the editor handles.
     for (var i = 0; i < this._solids.length; i++) {
     for (var j = 0; j < this._solids[i].length; j++) {
       var ptMinusCamera = {
-        x: this._solids[i][j].x - this.camera.x,
-        y: this._solids[i][j].y - this.camera.y
+        x: this._solids[i][j].x - this.camera.x + ctx.canvas.width/2,
+        y: this._solids[i][j].y - this.camera.y + ctx.canvas.height/2
       };
       if (canTouchPoints && ptDist2 (ptMinusCamera,this._mouse) < 10*10) {
         ctx.lineWidth = 4;
@@ -152,8 +114,8 @@ define(function(require){
     for (var i = 0; i < this._solids.length; i++) {
     for (var j = 0; j < this._solids[i].length; j++) {
       var ptMinusCamera = {
-        x: this._solids[i][j].x - this.camera.x,
-        y: this._solids[i][j].y - this.camera.y
+        x: this._solids[i][j].x - this.camera.x + ctx.canvas.width/2,
+        y: this._solids[i][j].y - this.camera.y + ctx.canvas.height/2
       };
       if (ptDist2 (ptMinusCamera,this._mouse) < 10*10) {
         return {i:i, j:j};
@@ -251,8 +213,8 @@ define(function(require){
   }
   MoveMode.prototype.onmousemove = function (x,y) {
     if (this._currentDragPoint) {
-      this._currentDragPoint.x = x + this._editor.camera.x;
-      this._currentDragPoint.y = y + this._editor.camera.y;
+      this._currentDragPoint.x = x + this._editor.camera.x - this._editor.context.canvas.width/2;
+      this._currentDragPoint.y = y + this._editor.camera.y - this._editor.context.canvas.height/2;
     }
   }
   MoveMode.prototype.onmouseup = function (x,y) {
@@ -298,8 +260,8 @@ define(function(require){
   PolyMode.iconIndex = 0;
   PolyMode.prototype.onmousedown = function (x,y) {
     this._editor.addPoly(
-      x + this._editor.camera.x,
-      y + this._editor.camera.y
+      x + this._editor.camera.x - this._editor.context.canvas.width/2,
+      y + this._editor.camera.y - this._editor.context.canvas.height/2
     );
   }
 

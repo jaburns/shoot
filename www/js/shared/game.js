@@ -3,7 +3,7 @@ if (typeof define !== 'function') {
 }
 
 define(function(require) {
-  'use strict'
+  'use strict';
 
   var st = require('./state');
   var stepPlayer = require('./stepPlayer');
@@ -33,8 +33,8 @@ define(function(require) {
   return {
     dt: 50,
     players: 5,
-    initialState: new st.State (),
-    defaultInput: new st.Input (),
+    initialState: new st.State,
+    defaultInput: new st.Input,
     step: mainStep
   };
 });
