@@ -5,6 +5,22 @@ if (typeof define !== 'function') {
 define(function(require) {
   'use strict';
 
+  var Vec2 = require('./vec2');
+
+  function intPower (n,p) {
+    if (p < 1) return n;
+    while (--p > 0) n *= n;
+    return n;
+  }
+  function fact (n) {
+    var ret = n;
+    while (n > 1) ret *= --n;
+    return ret;
+  }
+  function nChooseK (n,k) {
+    return fact(n) / (fact(k) * fact(n-k));
+  }
+
   /**
    * Given the coordinates of the end points of two line segments, this function returns
    * their intersection point, or null if they do not intersect.
@@ -70,6 +86,27 @@ define(function(require) {
       }
 
       return _cy > yMin && _cy < yMax;
+    }
+
+    /**
+     * Given an array of control points representing an arbitrary order Bezier curve
+     * along with a value 't' between 0, and 1, this function will return a point
+     * along the curve as a Vec2.
+     */
+    bezier: function (pts,t) {
+      if (pts.length < 2) return pts[0];
+
+      var u = 1 - t;
+      var n = pts.length - 1;
+
+      var ret = new Vec2;
+      for (var i = 0; i <= n; ++i) {
+        var coeff = nChooseK(n,i) * intPower(t,i) * intPower(u,n-i);
+        ret.x += coeff * pts[i].x;
+        ret.y += coeff * pts[i].y;
+      }
+
+      return ret;
     }
   };
 

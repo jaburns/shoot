@@ -14,23 +14,6 @@ define(function(require) {
     ]];
   }
 
-  function bezier (pts,t) {
-    var u = 1 - t;
-    if (pts.length < 3) return {
-      x: u*pts[0].x + t*pts[1].y,
-      y: u*pts[0].y + t*pts[1].y
-    };
-    if (pts.length < 4) return {
-      x: u*u*pts[0].x + 2*u*t*pts[1].x + t*t*pts[2].x,
-      y: u*u*pts[0].y + 2*u*t*pts[1].y + t*t*pts[2].y
-    };
-    if (pts.length < 5) return {
-      x: u*u*u*pts[0].x + 3*u*u*t*pts[1].x + 3*u*t*t*pts[2].x + t*t*t*pts[3].x,
-      y: u*u*u*pts[0].y + 3*u*u*t*pts[1].y + 3*u*t*t*pts[2].y + t*t*t*pts[3].y
-    };
-    return null;
-  }
-
   Level.prototype.getLines = function () {
 
   }
