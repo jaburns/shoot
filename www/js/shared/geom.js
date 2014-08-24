@@ -88,6 +88,9 @@ define(function(require) {
     bezier: function (pts,t) {
       if (pts.length < 2) return pts[0];
 
+      if (t <= 0) return pts[0];
+      if (t >= 1) return pts[pts.length-1];
+
       var u = 1 - t;
       var n = pts.length - 1;
 
@@ -100,8 +103,26 @@ define(function(require) {
 
       return ret;
     }
+
+    /**
+     * Estimates the length of a Bezier curve by measuring straight line segments
+     * approximating the curve.  'precision' segments are used.
+     */
+    bezierLength: function (pts,precision) {
+      var step = 1 / precision;
+      var lastPoint = pts[0];
+      var vec = new Vec2;
+      var len = 0;
+
+      for (var t = step; t <= 1; t += step) {
+        var newPoint = geom.bezier(pts,t);
+        len += vec.set(newPoint).sub(lastPoint).magnitude();
+        lastPoint = newPoint;
+      }
+
+      return len;
+    }
   };
 
   return geom;
 });
-
