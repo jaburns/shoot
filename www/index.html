@@ -10,13 +10,17 @@
     }
     #paper {
       background-color: black;
+      margin: auto;
+      position: absolute;
+      top: 0; left: 0; bottom: 0; right: 0;
+      border: 5px solid #111;
     }
     #options {
       color: #FFF;
       position: fixed;
       left: 0;
       top: 0;
-      font-family: Sans-Serif;
+      font-family: monospace;
       font-size: small;
     }
   </style>
@@ -27,9 +31,9 @@
 </head>
 <body>
   <div id="options">
-    <label for="smooth-enable">Smoothing: </label>
     <input type="checkbox" id="smooth-enable" checked="checked" />
+    <label for="smooth-enable">smoothing</label>
   </div>
-  <canvas id="paper" width="600" height="50"></canvas>
+  <canvas id="paper" width="750" height="650"></canvas>
 </body>
 </html>
