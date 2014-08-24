@@ -59,33 +59,25 @@ define(function(require) {
      * are perpendicular to the provided line segment.
      */
     pointInLinePerpSpace: function (ax, ay, bx, by, x, y) {
-      var _ax, _ay;
-      var _bx, _by;
-      var _cx, _cy;
-
-      float perpSlope = (ax-bx)/(by-ay);
-
       // If the slope is greater than 1, transpose the coordinate space to avoid infinity.
       if (perpSlope > 1) {
-        _ax = ay; _bx = by; _cx = y;
-        _ay = ax; _by = bx; _cy = x;
-        perpSlope = (_ax-_bx)/(_by-_ay);
-      } else {
-        _ax = ax; _bx = bx; _cx = x;
-        _ay = ay; _by = by; _cy = y;
+        var oax = ax, obx = bx, ox = x;
+        ax =  ay; bx =  by;_x =  y;
+        ay = oax; by = obx; y = ox;
       }
 
-      float yMin, yMax;
+      var perpSlope = (ax-bx)/(by-ay);
+      var yMin, yMax;
 
-      if (_ay > _by) {
-        yMin = perpSlope*(_cx - _bx) + _by;
-        yMax = perpSlope*(_cx - _ax) + _ay;
+      if (ay > by) {
+        yMin = perpSlope*(x - bx) + by;
+        yMax = perpSlope*(x - ax) + ay;
       } else {
-        yMin = perpSlope*(_cx - _ax) + _ay;
-        yMax = perpSlope*(_cx - _bx) + _by;
+        yMin = perpSlope*(x - ax) + ay;
+        yMax = perpSlope*(x - bx) + by;
       }
 
-      return _cy > yMin && _cy < yMax;
+      return y > yMin && y < yMax;
     }
 
     /**
