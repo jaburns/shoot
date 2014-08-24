@@ -8,7 +8,8 @@ define(function(require){
     this.camera = {x:0, y:0};
     this.context = context;
 
-    this._solids = [[
+    this.level = new Level;
+    this.level.solids = [[
       {"x":100,"y":100,"c":false},{"x":191,"y":438,"c":true},{"x":502,"y":432,"c":true},
       {"x":630,"y":285,"c":false},{"x":726,"y":177,"c":true},{"x":751,"y":199,"c":true},
       {"x":935,"y":284,"c":false},{"x":1036,"y":339,"c":false},{"x":1249,"y":339,"c":false},
@@ -26,7 +27,7 @@ define(function(require){
         if (e.pageY < 64*modes.length) {
           this._mode = new modes[~~(e.pageY/64)] (this);
         } else if (e.pageY < 64*(modes.length+1)) {
-          window.prompt ("Level data:", JSON.stringify (this._solids));
+          window.prompt ("Level data:", JSON.stringify (this.level.solids));
         }
       } else if (this._mode.onmousedown) {
         this._mode.onmousedown (e.pageX,e.pageY);
@@ -70,24 +71,22 @@ define(function(require){
 //      return;
 
     // Draw the terrain.
-    var q = new Level;
-    q.solids = this._solids;
-    renderLevel (ctx,this.camera,q);
+    renderLevel (ctx,this.camera,this.level);
 
     // Draw all the editor handles.
-    for (var i = 0; i < this._solids.length; i++) {
-    for (var j = 0; j < this._solids[i].length; j++) {
+    for (var i = 0; i < this.level.solids.length; i++) {
+    for (var j = 0; j < this.level.solids[i].length; j++) {
       var ptMinusCamera = {
-        x: this._solids[i][j].x - this.camera.x + ctx.canvas.width/2,
-        y: this._solids[i][j].y - this.camera.y + ctx.canvas.height/2
+        x: this.level.solids[i][j].x - this.camera.x + ctx.canvas.width/2,
+        y: this.level.solids[i][j].y - this.camera.y + ctx.canvas.height/2
       };
       if (canTouchPoints && ptDist2 (ptMinusCamera,this._mouse) < 10*10) {
         ctx.lineWidth = 4;
         ctx.strokeStyle = '#ff4';
-      } else if (j === 0 || j === this._solids[i].length-1) {
+      } else if (j === 0 || j === this.level.solids[i].length-1) {
         ctx.lineWidth = 2;
         ctx.strokeStyle = '#4f4';
-      } else if (this._solids[i][j].c) {
+      } else if (this.level.solids[i][j].c) {
         ctx.lineWidth = 2;
         ctx.strokeStyle = '#88f';
       } else {
@@ -111,11 +110,11 @@ define(function(require){
   }
 
   Editor.prototype.getPointIndexUnderMouse = function () {
-    for (var i = 0; i < this._solids.length; i++) {
-    for (var j = 0; j < this._solids[i].length; j++) {
+    for (var i = 0; i < this.level.solids.length; i++) {
+    for (var j = 0; j < this.level.solids[i].length; j++) {
       var ptMinusCamera = {
-        x: this._solids[i][j].x - this.camera.x + ctx.canvas.width/2,
-        y: this._solids[i][j].y - this.camera.y + ctx.canvas.height/2
+        x: this.level.solids[i][j].x - this.camera.x + ctx.canvas.width/2,
+        y: this.level.solids[i][j].y - this.camera.y + ctx.canvas.height/2
       };
       if (ptDist2 (ptMinusCamera,this._mouse) < 10*10) {
         return {i:i, j:j};
@@ -126,47 +125,47 @@ define(function(require){
 
   Editor.prototype.getPointUnderMouse = function () {
     var index = this.getPointIndexUnderMouse ();
-    if (index) return this._solids[index.i][index.j];
+    if (index) return this.level.solids[index.i][index.j];
     return null;
   }
 
   Editor.prototype.deletePointAt = function (index) {
     if (! index) return;
     var i = index.i, j = index.j;
-    this._solids[i].splice(j,1);
-    if (this._solids[i].length < 3) {
-      this._solids.splice(i,1);
+    this.level.solids[i].splice(j,1);
+    if (this.level.solids[i].length < 3) {
+      this.level.solids.splice(i,1);
     }
   }
 
   Editor.prototype.insertPointAfter = function (index) {
     if (! index) return;
     var i = index.i, j = index.j;
-    var pt = this._solids[i][j];
+    var pt = this.level.solids[i][j];
     var newPt = {x:pt.x, y:pt.y, c:false};
-    this._solids[i].splice (j+1,0,newPt);
+    this.level.solids[i].splice (j+1,0,newPt);
     return newPt;
   }
 
   Editor.prototype.toggleCurveModeAt = function (index) {
     if (! index) return;
     var i = index.i, j = index.j;
-    var pt = this._solids[i][j];
+    var pt = this.level.solids[i][j];
     if (pt.c) {
       pt.c = false;
     } else {
       // A curve anchor must not be the first or last vertex in a solid.
-      if (j === 0 || j === this._solids.length-1) return;
+      if (j === 0 || j === this.level.solids.length-1) return;
       // A point may become a curve anchor if it's neither preceded nor followed by 2 curve anchors.
-      if (j > 1 && this._solids[i][j-1].c && this._solids[i][j-2].c) return;
-      if (j < this._solids.length-2 && this._solids[i][j+1].c && this._solids[i][j+2].c) return;
+      if (j > 1 && this.level.solids[i][j-1].c && this.level.solids[i][j-2].c) return;
+      if (j < this.level.solids.length-2 && this.level.solids[i][j+1].c && this.level.solids[i][j+2].c) return;
 
       pt.c = true;
     }
   }
 
   Editor.prototype.addPoly = function (x,y) {
-    this._solids.push ([
+    this.level.solids.push ([
       {x: x-50, y: y+50, c: false},
       {x: x-50, y: y-50, c: false},
       {x: x+50, y: y-50, c: false},
