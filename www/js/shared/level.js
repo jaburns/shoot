@@ -5,6 +5,8 @@ if (typeof define !== 'function') {
 define(function(require) {
   'use strict';
 
+  var geom = require('./geom');
+
   function Level () {
     this.solids = [[
       {"x":100,"y":100,"c":false},{"x":191,"y":438,"c":true},{"x":502,"y":432,"c":true},
@@ -14,8 +16,44 @@ define(function(require) {
     ]];
   }
 
-  Level.prototype.getLines = function () {
+  var SEG_LENGTH = 5;
+  var LEN_MEASURE_PRECISION = 20;
 
+  Level.prototype.getCurves = function (solidIndex) {
+    var solid = this.solids[solidIndex];
+
+    var ret = [[ solid[0] ]];
+
+    for (var i = 1; i < solid.length; ) {
+      if (i < solid.length - 2 && solid[i].c && solid[i+1].c) {
+        ret.push ([ solid[i], solid[i+1], solid[i+2] ]);
+        i += 3;
+      }
+      else if (i < solid.length - 1 && solid[i].c) {
+        ret.push ([ solid[i], solid[i+1] ]);
+        i += 2;
+      }
+      else {
+        ret.push ([ solid[i] ]);
+        i++;
+      }
+    }
+  }
+
+  Level.prototype.getLines = function () {
+    var curves = this.getCurves(0);
+    var pts = [curves[0][0]];
+
+    for (var i = 1; i < curves.length; ++i) {
+      var ptsIn = [ curves[i-1][curves[i-1].length-1] ].concat (curves[i]);
+      var len = geom.bezierLength (ptsIn, LEN_MEASURE_PRECISION);
+      var segs = ~~(len / SEG_LENGTH);
+      for (var j = 1; j <= segs; ++j) {
+        pts.push (geom.bezier (ptsIn, j / segs));
+      }
+    }
+
+    return pts;
   }
 
   return Level;

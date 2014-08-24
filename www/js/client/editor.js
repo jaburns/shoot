@@ -60,6 +60,8 @@ define(function(require){
     for (var i = 0; i < this._solids.length; i++) {
       ctx.beginPath();
 
+      // TODO Use Level class method .getCurves();
+
       ctx.moveTo(
         this._solids[i][0].x - this.camera.x,
         this._solids[i][0].y - this.camera.y);
