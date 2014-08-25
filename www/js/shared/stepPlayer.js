@@ -5,7 +5,13 @@ if (typeof define !== 'function') {
 define(function(require) {
   'use strict'
 
+  var levelData = require('./levelData');
+
   return function (input, player, state) {
+    var level = levelData[state.level];
+
+    player.vel.y += 0.5;
+
     if (input.left.held) {
       player.vel.x -= 0.6;
       player.seatAngle.target = -Math.PI / 8;
@@ -25,14 +31,10 @@ define(function(require) {
     player.wheel.omega = player.vel.x / 15;
     player.wheel.theta += player.wheel.omega;
 
-    if (player.pos.x < -300 + 15) {
-        player.pos.x = -300 + 15;
-        player.vel.x = 0;
-    }
-    else if (player.pos.x > 300 - 15) {
-        player.pos.x = 300 - 15;
-        player.vel.x = 0;
-    }
+    var collided = level.collision.step (player.pos, player.vel, 15);
+
+    player.pos = collided.pos;
+    player.vel = collided.vel;
 
     return player;
   }

@@ -93,18 +93,21 @@ define(function(require) {
     var ox = this.x;
     this.x = ox * cos - this.y * sin;
     this.y = ox * sin + this.y * cos;
+    return this;
   }
 
   Vec2.prototype.rotate90 = function () {
     var ox = this.x;
     this.x = -this.y;
     this.y = ox;
+    return this;
   }
 
   Vec2.prototype.rotateBack90 = function () {
     var ox = this.x;
     this.x = this.y;
     this.y = -ox;
+    return this;
   }
 
 
@@ -117,7 +120,7 @@ define(function(require) {
     normComponent *= -normalScale;
     tangComponent *=  tangentScale;
 
-    this.set(unitNormal).scale(normComponent).plus(
+    this.set(unitNormal).scale(normComponent).add(
       unitTangent.scale(tangComponent)
     );
 

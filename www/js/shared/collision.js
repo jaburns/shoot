@@ -33,6 +33,8 @@ define(function(require) {
     }
     pts.push (curves[0][0]);
 
+    pts.reverse();
+
     return pts;
   }
 
@@ -61,13 +63,13 @@ define(function(require) {
         projection.y += ly;
 
         if (projection.magnitude2() < r2) {
-          normal = projection.clone.normalize();
+          normal = projection.clone().normalize();
           if (projection.cross (new Vec2 (bx - ax, by - ay)) > 0) {
             normal.scale(-1);
           }
           restore = (new Vec2(ax,ay))
             .add(pointOnLine)
-            .add(normal.clone().scale(radius));
+            .add(normal.clone().scale(r));
 
           x = restore.x;
           y = restore.y;
@@ -142,7 +144,7 @@ define(function(require) {
     if (collisionResult) {
       return {
         pos: collisionResult.restore,
-        vel: (new Vec2(vel)).reflect (collisionResult.normal, 1, 1);
+        vel: (new Vec2(vel)).reflect (collisionResult.normal, 0, 1)
       };
     }
     return {

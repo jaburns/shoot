@@ -59,8 +59,10 @@ return function (ctx, smoothingCheckbox) {
   var drawSeat = makeSeat ('#3996E8');
 
   function drawPlayer (ctx, player) {
-    drawWheel (ctx, player.pos.x+300, 35, player.wheel.theta);
-    drawSeat (ctx, player.pos.x+300, 35, player.seatAngle.value);
+    var centerX = ctx.canvas.width/2;
+    var centerY = ctx.canvas.height/2;
+    drawWheel (ctx, player.pos.x+centerX, player.pos.y+centerY, player.wheel.theta);
+    drawSeat  (ctx, player.pos.x+centerX, player.pos.y+centerY, player.seatAngle.value);
   }
 
   var state0;
@@ -68,12 +70,14 @@ return function (ctx, smoothingCheckbox) {
   var stateArriveTime = null;
   var DT = 50;
 
+  var cam = {x:0,y:0};
+
   function renderState (state) {
     for (var i in state.players) {
       drawPlayer (ctx, state.players[i]);
     }
     // TODO cache rendered level in a hidden canvas element.
-    renderLevel (ctx, state.players[i].pos, levelData[state.level]);
+    renderLevel (ctx, cam, levelData[state.level]);
   }
 
   function renderLoop () {

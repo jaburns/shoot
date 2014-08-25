@@ -6,9 +6,11 @@ define(function(require) {
   'use strict';
 
   var geom = require('./geom');
+  var Collision = require('./collision');
 
   function Level (data) {
     this.solids = data.solids;
+    this.collision = new Collision (this);
   }
 
   Level.prototype.getCurves = function (solidIndex) {

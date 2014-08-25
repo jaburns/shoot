@@ -89,10 +89,10 @@ define(function(require) {
      * provided point and perpendicularly intersects the first line.
      */
     projectPointOnLine: function (m, x, y) {
-      if (Math.Abs (m) < 1e-9) {
+      if (Math.abs (m) < 1e-9) {
         return new Vec2 (x,0);
       }
-      else if (Math.Abs (m) > 1e9) {
+      else if (Math.abs (m) > 1e9) {
         return new Vec2 (0,y);
       }
       var retY = (y*m+x)*m/(1+m*m);

@@ -14,7 +14,7 @@ define(function(require) {
 
   st.Player = function (id) {
     this.id = id;
-    this.pos = {x:0, y:0};
+    this.pos = {x:50, y:0};
     this.vel = {x:0, y:0};
     this.wheel = {theta:0, omega:0};
     this.seatAngle = {target:0, value:0};
