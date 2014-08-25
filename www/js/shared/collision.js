@@ -83,25 +83,18 @@ define(function(require) {
       restore: restore
     };
 
-    return null;
-
-    // There was no collision with the edge of a local line, test against local points.
-    /*
-    foreach (var line in lines) {
-        var deltaA = new Vector2 (x - line.A.x, y - line.A.y);
-        if (deltaA.sqrMagnitude < r2) {
-            normal = deltaA.normalized;
-            restore = new Vector2 (line.A.x, line.A.y) + r * normal;
-            return true;
+    for (var i = 0; i < lines.length - 1; i++) {
+      var delta = new Vec2 (x - lines[i].x, y - lines[i].y);
+      if (delta.magnitude2() < r2) {
+        var norm = delta.normalize();
+        return {
+          normal: norm,
+          restore: (new Vec2 (lines[i].x,lines[i].y)).add(norm.clone().scale(r))
         }
-        var deltaB = new Vector2 (x - line.B.x, y - line.B.y);
-        if (deltaB.sqrMagnitude < r2) {
-            normal = deltaB.normalized;
-            restore = new Vector2 (line.B.x, line.B.y) + r * normal;
-            return true;
-        }
+      }
     }
-    */
+
+    return null;
   }
 
   Collision.prototype._sweepCircleCollision = function (x0,y0,x1,y1,r) {
