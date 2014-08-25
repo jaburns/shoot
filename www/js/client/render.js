@@ -55,29 +55,35 @@ return function (ctx, smoothingCheckbox) {
     }
   }
 
+  var camera = {x:0,y:0};
+
   var drawWheel = makeWheel ('#C13FFF', '#7F3FFF');
   var drawSeat = makeSeat ('#3996E8');
 
   function drawPlayer (ctx, player) {
     var centerX = ctx.canvas.width/2;
     var centerY = ctx.canvas.height/2;
-    drawWheel (ctx, player.pos.x+centerX, player.pos.y+centerY, player.wheel.theta);
-    drawSeat  (ctx, player.pos.x+centerX, player.pos.y+centerY, player.seatAngle.value);
+    drawWheel (ctx, player.pos.x-camera.x+centerX, player.pos.y-camera.y+centerY, player.wheel.theta);
+    drawSeat  (ctx, player.pos.x-camera.x+centerX, player.pos.y-camera.y+centerY, player.seatAngle.value);
   }
+
+  var pid;
 
   var state0;
   var state1;
   var stateArriveTime = null;
   var DT = 50;
 
-  var cam = {x:0,y:0};
-
   function renderState (state) {
     for (var i in state.players) {
       drawPlayer (ctx, state.players[i]);
+      if (state.players[i].id === pid) {
+        camera = state.players[i].pos;
+      }
     }
+
     // TODO cache rendered level in a hidden canvas element.
-    renderLevel (ctx, cam, levelData[state.level]);
+    renderLevel (ctx, camera, levelData[state.level]);
   }
 
   function renderLoop () {
@@ -96,7 +102,8 @@ return function (ctx, smoothingCheckbox) {
   }
   window.requestAnimationFrame (renderLoop);
 
-  return function (state) {
+  return function (state, id) {
+    pid = id;
     state0 = state1 ? state1 : null;
     state1 = state;
     stateArriveTime = new Date;
