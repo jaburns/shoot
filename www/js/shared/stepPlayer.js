@@ -27,8 +27,6 @@ define(function(require) {
     player.seatAngle.value +=
       (player.seatAngle.target - player.seatAngle.value) / 3;
 
-    player.pos.x += player.vel.x;
-
     player.wheel.omega = player.vel.x / 15;
     player.wheel.theta += player.wheel.omega;
 
